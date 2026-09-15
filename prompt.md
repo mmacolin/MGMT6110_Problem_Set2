@@ -336,7 +336,7 @@ replacement and state handling. Preserve the current country coverage.
 Do not claim tests, deployment, or human verification not performed.
 
 CONTEXT: CountryLens is deployed on Vercel from GitHub:
-https://countrylens-ecru.vercel.app/
+https://problemset2.vercel.app/
 
 No credential environment variable is required for World Bank.
 A real response from the Singapore 2023 endpoint, previously opened
@@ -401,7 +401,7 @@ Help me independently verify CountryLens's deployed World Bank
 integration. Do not change code yet.
 
 My deployed URL is:
-https://countrylens-ecru.vercel.app/
+https://problemset2.vercel.app/
 
 Provide step-by-step checks for:
 1. Opening /api/health and interpreting each field, including the
@@ -431,7 +431,7 @@ Do not claim that I verified anything. Wait for my observations.
 
 Make targeted improvements to my existing CountryLens application.
 
-Live URL: https://countrylens-ecru.vercel.app/
+Live URL: https://problemset2.vercel.app/
 
 1. MY HUMAN OBSERVATIONS
 
@@ -550,7 +550,7 @@ Inspect api/health.js and explain its response fields.
 The World Bank API requires no key; report that honestly.
 
 The deployed health address is:
-https://countrylens-ecru.vercel.app/api/health
+https://problemset2.vercel.app/api/health
 
 Distinguish code inspection from live verification.
 Do not claim the deployed endpoint works unless you actually access
@@ -588,7 +588,7 @@ Do not claim completion of deployment or human verification unless
 those actions have actually occurred.
 
 Make targeted improvements to my existing CountryLens application.
-Live URL: https://countrylens-ecru.vercel.app/
+Live URL: https://problemset2.vercel.app/api/health
 
 1. MY HUMAN OBSERVATIONS
 
@@ -707,7 +707,7 @@ Inspect api/health.js and explain its response fields.
 The World Bank API requires no key; report that honestly.
 
 The deployed health address is:
-https://countrylens-ecru.vercel.app/api/health
+https://problemset2.vercel.app/api/health/api/health
 
 Distinguish code inspection from live verification.
 Do not claim the deployed endpoint works unless you actually access
@@ -737,3 +737,5 @@ After editing:
 - Provide a short numbered manual retest checklist.
 - Confirm temporary test overrides are not active in production.
 - Explain which changes need pushing to GitHub and redeploying on Vercel.
+
+
