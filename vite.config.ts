@@ -24,6 +24,10 @@ const apiDevPlugin = (): Plugin => ({
           const { default: handler } = await import('./api/health.js');
           return await handler(req, res);
         }
+        if (url.pathname === '/api/comments') {
+          const { default: handler } = await import('./api/comments.js');
+          return await handler(req, res);
+        }
         next();
       } catch (err) {
         console.error('API middleware error:', err);

@@ -19,7 +19,7 @@ import { Header } from './components/Header';
 import { ComparisonForm } from './components/ComparisonForm';
 import { ResultsView } from './components/ResultsView';
 import { SupportingInfo } from './components/SupportingInfo';
-import { DisqusComments } from './components/DisqusComments';
+import { CommunityComments } from './components/CommunityComments';
 import { Footer } from './components/Footer';
 
 export default function App() {
@@ -307,8 +307,8 @@ export default function App() {
           {/* Supporting Explanatory Note */}
           <SupportingInfo />
 
-          {/* Disqus Community Feedback */}
-          <DisqusComments />
+          {/* Community Feedback Box */}
+          <CommunityComments />
         </main>
 
         {/* Footer with Privacy Notice */}
