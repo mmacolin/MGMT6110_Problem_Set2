@@ -20,6 +20,7 @@ import { ComparisonForm } from './components/ComparisonForm';
 import { ResultsView } from './components/ResultsView';
 import { SupportingInfo } from './components/SupportingInfo';
 import { DisqusComments } from './components/DisqusComments';
+import { Footer } from './components/Footer';
 
 export default function App() {
   // Country catalogue state loaded from /api/country-list
@@ -309,6 +310,9 @@ export default function App() {
           {/* Disqus Community Feedback */}
           <DisqusComments />
         </main>
+
+        {/* Footer with Privacy Notice */}
+        <Footer />
       </div>
     </div>
   );
