@@ -36,24 +36,26 @@ export function CountrySelect({
   const listboxId = useId();
 
   // Find currently selected country
+  const countryList = countries || [];
+
   const selectedCountry = useMemo(() => {
-    return countries.find((c) => c.code === value) || {
+    return countryList.find((c) => c.code === value) || {
       code: value,
       name: value,
     };
-  }, [countries, value]);
+  }, [countryList, value]);
 
   // Filter countries based on search
   const filteredCountries = useMemo(() => {
-    if (!searchQuery.trim()) return countries;
+    if (!searchQuery.trim()) return countryList;
     const q = searchQuery.toLowerCase().trim();
-    return countries.filter(
+    return countryList.filter(
       (c) =>
         c.name.toLowerCase().includes(q) ||
         c.code.toLowerCase().includes(q) ||
         (c.id && c.id.toLowerCase().includes(q))
     );
-  }, [countries, searchQuery]);
+  }, [countryList, searchQuery]);
 
   // Close dropdown on outside click
   useEffect(() => {

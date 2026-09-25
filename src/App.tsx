@@ -307,7 +307,7 @@ export default function App() {
           {/* Supporting Explanatory Note */}
           <SupportingInfo />
 
-          {/* Community Feedback Box */}
+          {/* Community Feedback (Disqus Forum) */}
           <CommunityComments />
         </main>
 
