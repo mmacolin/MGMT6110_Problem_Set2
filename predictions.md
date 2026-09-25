@@ -11,7 +11,7 @@ Who it is for, and the one job it does for them: CountryLens helps students and 
 
 Health check from Step 1, on September 25, 2026, about 4:45 PM Singapore time: The comparison data route returned 2023 GDP per capita of $2,429.75 for Cambodia and $86,382.59 for Singapore, plus a 35.6× comparison. I could not verify /api/health separately.
 
-Devices and browsers I used for this evaluation: [ADD YOUR ACTUAL DEVICES AND BROWSERS; this inspection used desktop Chrome only.]
+Devices and browsers I used for this evaluation: Browser on Google Chrome. 
 
 2. My findings
 
@@ -33,7 +33,7 @@ Finding 2
 
 Where: https://problemset2.vercel.app/ — comparison form and result area.
 
-What I did, what I saw: I compared Cambodia and Singapore for 2023 and saw two values and their difference. I changed the year to 1950. The completed result disappeared immediately and the area reverted to “Ready to compare,” before I ran a new request.
+What I did, what I saw: I compared Cambodia and Singapore for 2023 and saw two values and their difference. I changed the year to 1950. The completed result disappeared immediately, and the area reverted to “Ready to compare” before I ran a new request.
 
 Which heuristic: 3 — User control and freedom.
 
@@ -53,7 +53,7 @@ Which heuristic: 10 — Help and documentation.
 
 Screen or system: Screen. The selected country codes, year, indicator code, and retrieval timestamp are already available in the result, so the page can display a complete citation or source link.
 
-Severity, and why: 2 — Minor. I can read the comparison, but checking or citing its exact underlying observations takes extra work.
+Severity and why: 2 — Minor. I can read the comparison, but checking or citing its exact underlying observations takes extra work.
 
 The repair: Each result provides an exact country, indicator, and year source link or citation, plus the full retrieval date and time with a time zone.
 
