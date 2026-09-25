@@ -64,7 +64,6 @@ export const CommunityComments: React.FC = () => {
       script.src = `https://${disqusShortname}.disqus.com/embed.js`;
       script.setAttribute('data-timestamp', String(Date.now()));
       script.async = true;
-      script.crossOrigin = 'anonymous';
 
       script.onerror = (e) => {
         console.warn('Disqus script failed to load:', e);
