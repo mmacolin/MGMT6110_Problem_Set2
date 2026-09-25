@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+#disqus_thread {
+  color: rgb(30, 41, 59) !important;
+  background-color: transparent !important;
+}
+
+#disqus_thread a {
+  color: rgb(13, 148, 136) !important;
+}
