@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import {
   DEFAULT_COUNTRY_A,
   DEFAULT_COUNTRY_B,
@@ -16,6 +16,7 @@ import {
   CountryListResponse,
 } from './types';
 import { Header } from './components/Header';
+import { OnboardingHero, COMPARISON_PRESETS } from './components/OnboardingHero';
 import { ComparisonForm } from './components/ComparisonForm';
 import { ResultsView } from './components/ResultsView';
 import { SupportingInfo } from './components/SupportingInfo';
@@ -43,6 +44,17 @@ export default function App() {
   const requestSeqRef = useRef<number>(0);
 
   const isSameCountry = countryA === countryB;
+
+  // Active preset detection
+  const activePresetId = useMemo(() => {
+    const found = COMPARISON_PRESETS.find(
+      (p) =>
+        ((p.codeA === countryA && p.codeB === countryB) ||
+          (p.codeA === countryB && p.codeB === countryA)) &&
+        p.year === year
+    );
+    return found ? found.id : null;
+  }, [countryA, countryB, year]);
 
   // Load World Bank country catalogue
   const fetchCatalog = useCallback(async () => {
@@ -77,7 +89,7 @@ export default function App() {
     fetchCatalog();
   }, [fetchCatalog]);
 
-  // Reset results when inputs change
+  // Reset results when inputs change manually
   const resetResults = useCallback(() => {
     if (activeAbortControllerRef.current) {
       activeAbortControllerRef.current.abort();
@@ -121,8 +133,8 @@ export default function App() {
     resetResults();
   };
 
-  const handleCompare = async () => {
-    if (isSameCountry) return;
+  const executeComparison = async (targetA = countryA, targetB = countryB, targetYear = year) => {
+    if (targetA === targetB) return;
 
     // Abort previous in-flight request if any
     if (activeAbortControllerRef.current) {
@@ -140,9 +152,9 @@ export default function App() {
 
     try {
       const queryParams = new URLSearchParams({
-        countryA,
-        countryB,
-        year: String(year),
+        countryA: targetA,
+        countryB: targetB,
+        year: String(targetYear),
       });
 
       const response = await fetch(`/api/countries?${queryParams.toString()}`, {
@@ -249,7 +261,6 @@ export default function App() {
       setComparisonStatus('compared');
     } catch (err: unknown) {
       if (abortController.signal.aborted) {
-        // User aborted or superseded by newer request; ignore silently
         return;
       }
 
@@ -270,14 +281,27 @@ export default function App() {
     }
   };
 
+  const handleSelectPreset = (newA: string, newB: string, newYear: number) => {
+    setCountryA(newA);
+    setCountryB(newB);
+    setYear(newYear);
+    executeComparison(newA, newB, newYear);
+  };
+
   return (
-    <div className="min-h-screen bg-[#F7F8FA] text-slate-800 antialiased selection:bg-teal-100 selection:text-teal-900">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900">
       <div className="max-w-4xl mx-auto px-4 py-8 sm:px-6 sm:py-10">
-        {/* Header */}
+        {/* Header with Logo and Navigation */}
         <Header />
 
         {/* Main Content Area */}
         <main className="space-y-6">
+          {/* Onboarding & Value Proposition Hero with Quick Presets */}
+          <OnboardingHero
+            onSelectPreset={handleSelectPreset}
+            activePresetId={activePresetId}
+          />
+
           {/* Comparison Form Panel */}
           <ComparisonForm
             countries={countries}
@@ -293,7 +317,7 @@ export default function App() {
             onCountryBChange={handleCountryBChange}
             onYearChange={handleYearChange}
             onSwapCountries={handleSwapCountries}
-            onSubmit={handleCompare}
+            onSubmit={() => executeComparison()}
           />
 
           {/* Results Area */}
@@ -301,10 +325,10 @@ export default function App() {
             status={comparisonStatus}
             result={comparisonResult}
             error={structuredError}
-            onRetry={handleCompare}
+            onRetry={() => executeComparison()}
           />
 
-          {/* Supporting Explanatory Note */}
+          {/* Supporting Explanatory Methodology Note */}
           <SupportingInfo />
 
           {/* Community Feedback (Disqus Forum) */}

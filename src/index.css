@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
 #disqus_thread {
   color: rgb(30, 41, 59) !important;
   background-color: transparent !important;

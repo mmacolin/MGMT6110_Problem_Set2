@@ -50,17 +50,29 @@ export function ComparisonForm({
   return (
     <section
       id="comparison-form-section"
-      className="bg-white p-5 sm:p-7 rounded-xl border border-slate-200 shadow-sm"
+      className="bg-white p-5 sm:p-7 rounded-2xl border border-slate-200/90 shadow-[0_2px_12px_-2px_rgba(15,23,42,0.06)] transition-shadow"
       aria-label="Country and year comparison form"
     >
+      {/* Form Section Header */}
+      <div className="mb-5 pb-3 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <h3 className="text-base font-bold text-slate-900">
+            Compare Two Countries or Economies
+          </h3>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Select Country A, Country B, and the observation year to compute macroeconomic disparity.
+          </p>
+        </div>
+      </div>
+
       {/* Catalogue Loading Banner */}
       {isCatalogLoading && (
         <div
           id="catalog-loading-banner"
-          className="mb-4 p-3 bg-slate-50 border border-slate-200 rounded-md text-xs text-slate-600 flex items-center gap-2"
+          className="mb-4 p-3 bg-blue-50/60 border border-blue-200/80 rounded-lg text-xs text-blue-800 flex items-center gap-2"
         >
-          <div className="w-3.5 h-3.5 border-2 border-slate-400 border-t-transparent rounded-full animate-spin shrink-0" />
-          <span>Loading World Bank country catalogue…</span>
+          <div className="w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin shrink-0" />
+          <span>Synchronizing official World Bank country records…</span>
         </div>
       )}
 
@@ -68,7 +80,7 @@ export function ComparisonForm({
       {isCatalogError && (
         <div
           id="catalog-error-banner"
-          className="mb-4 p-3.5 bg-rose-50 border border-rose-200 rounded-md text-xs text-rose-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2"
+          className="mb-4 p-3.5 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2"
           role="alert"
         >
           <div className="flex items-center gap-2">
@@ -105,7 +117,7 @@ export function ComparisonForm({
           <div id="country-a-container" className="w-full">
             <CountrySelect
               id="country-a-select"
-              label="Country/economy A"
+              label="Country / Economy A"
               value={countryA}
               disabledCountryCode={countryB}
               disabledCountryLabel="Country B"
@@ -128,7 +140,7 @@ export function ComparisonForm({
               disabled={isLoading || isCatalogLoading}
               title="Swap Country A and Country B"
               aria-label="Swap Country A and Country B"
-              className="min-h-[44px] w-full md:w-[44px] flex items-center justify-center gap-1.5 text-xs text-slate-600 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+              className="min-h-[44px] w-full md:w-[44px] flex items-center justify-center gap-1.5 text-xs text-slate-600 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 shadow-2xs"
             >
               <ArrowLeftRight className="w-4 h-4 text-slate-600" />
               <span className="md:hidden text-xs font-semibold">Swap countries</span>
@@ -139,7 +151,7 @@ export function ComparisonForm({
           <div id="country-b-container" className="w-full">
             <CountrySelect
               id="country-b-select"
-              label="Country/economy B"
+              label="Country / Economy B"
               value={countryB}
               disabledCountryCode={countryA}
               disabledCountryLabel="Country A"
@@ -151,20 +163,20 @@ export function ComparisonForm({
           </div>
         </div>
 
-        {/* Tier 2: Year Box & Compare Button in Black Box */}
+        {/* Tier 2: Year Selector & Execute Button */}
         <div
           id="action-bar-container"
           className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-end gap-3.5 sm:gap-4"
         >
-          {/* Highly Visible Year Box */}
+          {/* Observation Year */}
           <div id="year-container" className="w-full sm:w-56 md:w-64 shrink-0">
             <label
               htmlFor="year-select"
-              className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-1.5 flex items-center gap-1.5"
+              className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5 flex items-center gap-1.5"
             >
-              <Calendar className="w-3.5 h-3.5 text-slate-600" />
+              <Calendar className="w-3.5 h-3.5 text-slate-500" />
               <span>Observation Year</span>
-              <span className="text-[10px] font-normal text-slate-600 normal-case ml-auto">
+              <span className="text-[10px] font-normal text-slate-500 normal-case ml-auto font-mono">
                 1950 – 2025
               </span>
             </label>
@@ -174,7 +186,7 @@ export function ComparisonForm({
                 value={year}
                 disabled={isLoading || isCatalogLoading}
                 onChange={(e) => onYearChange(Number(e.target.value))}
-                className="w-full min-h-[48px] bg-white border-2 border-slate-300 hover:border-slate-500 focus:border-slate-900 rounded-lg px-3.5 py-2.5 text-base font-bold text-slate-900 shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-1 appearance-none pr-10 cursor-pointer disabled:opacity-50 transition-colors"
+                className="w-full min-h-[46px] bg-slate-50/50 hover:bg-white border border-slate-300 hover:border-slate-400 focus:border-blue-600 rounded-lg px-3.5 py-2.5 text-base font-semibold text-slate-900 shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-1 appearance-none pr-10 cursor-pointer disabled:opacity-50 transition-colors font-mono"
               >
                 {years.map((y) => (
                   <option key={y} value={y} className="font-normal text-slate-900 py-1">
@@ -182,13 +194,13 @@ export function ComparisonForm({
                   </option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-700">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-600">
                 <ChevronDown className="w-4 h-4 stroke-[2.5]" />
               </div>
             </div>
           </div>
 
-          {/* Highly Visible Compare in Black Box */}
+          {/* Primary Action Button */}
           <div id="submit-container" className="flex-1 w-full">
             <label
               className="hidden sm:block text-xs font-bold uppercase tracking-wider text-transparent mb-1.5 select-none"
@@ -200,7 +212,7 @@ export function ComparisonForm({
               type="submit"
               id="compare-button"
               disabled={isSameCountry || isLoading || isCatalogLoading || isCatalogError}
-              className="w-full min-h-[48px] px-6 py-2.5 rounded-lg font-bold text-base tracking-wide text-white bg-slate-950 hover:bg-black active:bg-slate-900 border border-slate-900 shadow-md hover:shadow-lg transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-950 flex items-center justify-center gap-2.5 cursor-pointer group"
+              className="w-full min-h-[46px] px-6 py-2.5 rounded-lg font-bold text-sm sm:text-base tracking-wide text-white bg-slate-900 hover:bg-slate-800 active:bg-slate-950 border border-slate-900 shadow-sm hover:shadow-md transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-900 flex items-center justify-center gap-2 cursor-pointer group"
             >
               {isLoading ? (
                 <>
@@ -209,7 +221,7 @@ export function ComparisonForm({
                 </>
               ) : (
                 <>
-                  <TrendingUp className="w-5 h-5 text-white shrink-0 group-hover:scale-110 transition-transform" />
+                  <TrendingUp className="w-4 h-4 text-blue-300 shrink-0 group-hover:scale-110 transition-transform" />
                   <span>Compare GDP Per Capita</span>
                 </>
               )}
@@ -221,22 +233,11 @@ export function ComparisonForm({
         {isSameCountry && (
           <div
             id="validation-same-country-alert"
-            className="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-sm text-amber-800"
+            className="mt-3 pt-3 border-t border-slate-100 flex items-center gap-2 text-sm text-amber-800 bg-amber-50/70 p-3 rounded-lg border border-amber-200"
             role="alert"
           >
-            <svg
-              className="w-4 h-4 text-amber-600 shrink-0"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span>Choose two different countries/economies to compare.</span>
+            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>Choose two different countries or economies to compare.</span>
           </div>
         )}
       </form>
