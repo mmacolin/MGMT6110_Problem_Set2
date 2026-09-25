@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { ExternalLink, RefreshCw, AlertTriangle } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
+import { ExternalLink, RefreshCw, AlertTriangle, Loader2 } from 'lucide-react';
 
 interface DisqusPageConfig {
   url?: string;
@@ -9,7 +9,7 @@ interface DisqusPageConfig {
 
 declare global {
   interface Window {
-    disqus_config?: (this: { page: DisqusPageConfig }) => void;
+    disqus_config?: (this: { page: DisqusPageConfig; callbacks?: { onReady?: Array<() => void> } }) => void;
     DISQUS?: {
       reset: (options: { reload: boolean; config?: (this: { page: DisqusPageConfig }) => void }) => void;
     };
@@ -17,28 +17,43 @@ declare global {
 }
 
 export const CommunityComments: React.FC = () => {
-  const [loadError, setLoadError] = useState(false);
+  const [loadState, setLoadState] = useState<'loading' | 'ready' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const loadDisqus = () => {
-    setLoadError(false);
+    setLoadState('loading');
     setErrorMessage(null);
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
 
     const disqusShortname = 'countrylens';
     const canonicalUrl = 'https://problemset2.vercel.app/';
     const identifier = 'countrylens-home';
     const pageTitle = 'CountryLens - Compare GDP Per Capita';
 
-    window.disqus_config = function (this: { page: DisqusPageConfig }) {
+    // Official Disqus configuration
+    window.disqus_config = function (this: {
+      page: DisqusPageConfig;
+      callbacks?: { onReady?: Array<() => void> };
+    }) {
       this.page.url = canonicalUrl;
       this.page.identifier = identifier;
       this.page.title = pageTitle;
+      this.callbacks = this.callbacks || {};
+      this.callbacks.onReady = this.callbacks.onReady || [];
+      this.callbacks.onReady.push(() => {
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
+        setLoadState('ready');
+      });
     };
 
-    const scriptId = 'disqus-embed-script';
-    const existingScript = document.getElementById(scriptId);
-
-    // If DISQUS is already present on the window, call reset to bind to the current DOM thread element
+    // If DISQUS is already on the window (from a previous load), reset with the new configuration
     if (window.DISQUS) {
       try {
         window.DISQUS.reset({
@@ -47,42 +62,57 @@ export const CommunityComments: React.FC = () => {
         });
       } catch (err) {
         console.warn('Disqus reset error:', err);
-        setLoadError(true);
-        setErrorMessage('Failed to reinitialize Disqus. Click retry or check if your browser blocks third-party frames.');
       }
-      return;
+    } else {
+      const scriptId = 'disqus-embed-script';
+      let script = document.getElementById(scriptId) as HTMLScriptElement | null;
+
+      if (!script) {
+        script = document.createElement('script');
+        script.id = scriptId;
+        script.src = `https://${disqusShortname}.disqus.com/embed.js`;
+        script.setAttribute('data-timestamp', String(Date.now()));
+        script.async = true;
+
+        script.onerror = (e) => {
+          console.warn('Disqus script failed to load:', e);
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+          }
+          setLoadState('error');
+          setErrorMessage(
+            'The Disqus embed script could not be loaded. This typically occurs when an ad blocker, Brave Shields, or privacy extension blocks third-party comments.'
+          );
+        };
+
+        (document.head || document.body).appendChild(script);
+      }
     }
 
-    // If script tag already exists in DOM but window.DISQUS isn't ready yet, remove stale script
-    if (existingScript) {
-      existingScript.remove();
-    }
-
-    try {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.src = `https://${disqusShortname}.disqus.com/embed.js`;
-      script.setAttribute('data-timestamp', String(Date.now()));
-      script.async = true;
-
-      script.onerror = (e) => {
-        console.warn('Disqus script failed to load:', e);
-        setLoadError(true);
+    // Fallback: check DOM for iframe injection or onReady within 8 seconds
+    // If the comments iframe hasn't rendered within 8s, display the friendly fallback card
+    timeoutRef.current = setTimeout(() => {
+      const thread = document.getElementById('disqus_thread');
+      const hasIframe = thread && thread.querySelector('iframe');
+      if (hasIframe) {
+        setLoadState('ready');
+      } else {
+        setLoadState('error');
         setErrorMessage(
-          'Could not load the Disqus script. This usually happens when an ad blocker, Brave Shields, or privacy extension blocks third-party trackers, or when third-party cookies are disabled.'
+          'Disqus took too long to load or was blocked by browser privacy settings. You can click Retry below or participate directly in the discussion.'
         );
-      };
-
-      (document.head || document.body).appendChild(script);
-    } catch (err) {
-      console.warn('Could not inject Disqus script:', err);
-      setLoadError(true);
-      setErrorMessage('Could not insert the Disqus script tag into the document.');
-    }
+      }
+    }, 8000);
   };
 
   useEffect(() => {
     loadDisqus();
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, []);
 
   return (
@@ -93,7 +123,6 @@ export const CommunityComments: React.FC = () => {
     >
       {/* Outer Card with clean rounded border and subtle shadow */}
       <div className="bg-white rounded-xl border border-slate-200/90 shadow-sm p-4 sm:p-6 transition-shadow">
-        
         {/* Section Heading & Friendly Invitation */}
         <div className="mb-4">
           <h2
@@ -107,15 +136,23 @@ export const CommunityComments: React.FC = () => {
           </p>
         </div>
 
-        {/* Prompt callout banner with blue left border accent */}
+        {/* Prompt callout banner with blue left border accent matching reference screenshot */}
         <div className="bg-blue-50/70 border-l-4 border-blue-600 rounded-r-lg py-3 px-4 mb-5 text-center">
           <p className="text-sm font-semibold text-slate-800 tracking-tight">
             Please share your feedback below on what worked for you and what didn't!
           </p>
         </div>
 
-        {/* Error Fallback Banner if Disqus fails to load */}
-        {loadError && (
+        {/* Loading Spinner Indicator while Disqus frame initializes */}
+        {loadState === 'loading' && (
+          <div className="flex flex-col items-center justify-center py-8 text-slate-500 gap-2">
+            <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+            <p className="text-xs font-medium">Loading discussion thread...</p>
+          </div>
+        )}
+
+        {/* Error Fallback Banner: shown if Disqus is blocked or fails to load within timeout */}
+        {loadState === 'error' && (
           <div
             role="alert"
             className="mb-5 p-4 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
@@ -152,7 +189,7 @@ export const CommunityComments: React.FC = () => {
         )}
 
         {/* Official Disqus Embed Container */}
-        <div className="min-h-[300px] w-full">
+        <div className={`w-full ${loadState === 'loading' ? 'min-h-[100px]' : ''}`}>
           <div id="disqus_thread" className="w-full"></div>
           <noscript>
             <p className="text-sm text-slate-500 py-4">
