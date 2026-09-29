@@ -96,7 +96,7 @@ Severity, and why: 2 — Minor. The ambiguity could affect when I leave for the 
 The repair: Label the times “Next: 2 min” and “Following: 40 min,” or separate them with clear headings.
 What works, and should stay as it is: The app's purpose is easy to understand, and its main arrival information is presented simply.
 
-BUSSG — sgbusnow.vercel.app
+SG Bus Now — sgbusnow.vercel.app
 Heuristic evaluation by Macolin Moeung, Group 1
 Tested on laptop, 27/09/2026 at 9:00 pm
 
