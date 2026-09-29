@@ -7,9 +7,9 @@ export const DEFAULT_COUNTRY_A = 'KH'; // Cambodia
 export const DEFAULT_COUNTRY_B = 'SG'; // Singapore
 export const DEFAULT_YEAR = 2023;
 
-// Historical range from 2025 down to 1950 (World Bank indicator NY.GDP.PCAP.CD coverage)
+// Historical range from 2025 down to 1960 (World Bank indicator NY.GDP.PCAP.CD coverage)
 export const YEARS: number[] = Array.from(
-  { length: 2025 - 1950 + 1 },
+  { length: 2025 - 1960 + 1 },
   (_, i) => 2025 - i
 );
 

@@ -177,7 +177,7 @@ export function ComparisonForm({
               <Calendar className="w-3.5 h-3.5 text-slate-500" />
               <span>Observation Year</span>
               <span className="text-[10px] font-normal text-slate-500 normal-case ml-auto font-mono">
-                1950 – 2025
+                1960 – 2025
               </span>
             </label>
             <div className="relative">

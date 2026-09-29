@@ -11,7 +11,7 @@
 
 import { getSupportedCatalog } from './country-catalog.js';
 
-const MIN_YEAR = 1950;
+const MIN_YEAR = 1960;
 const MAX_YEAR = 2025;
 const ALLOWED_YEARS = Array.from(
   { length: MAX_YEAR - MIN_YEAR + 1 },

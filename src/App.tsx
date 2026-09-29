@@ -216,7 +216,7 @@ export default function App() {
             message:
               errPayload.message ||
               errPayload.error ||
-              'Invalid selection: Country A and Country B must be different, and the year must be between 1950 and 2025.',
+              'Invalid selection: Country A and Country B must be different, and the year must be between 1960 and 2025.',
           });
         } else {
           setStructuredError({
