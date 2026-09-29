@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'motion/react';
 import { ComparisonStatus, ComparisonResult, StructuredError } from '../types';
 import { getCountryFlag } from '../utils/flags';
@@ -28,7 +28,25 @@ function formatRetrievedTime(isoString: string): string {
   }
 }
 
+function formatRetrievedDateTime(isoString: string): string {
+  try {
+    const d = new Date(isoString);
+    const day = d.toLocaleDateString([], { day: 'numeric', month: 'long' });
+    return `${day}, ${formatRetrievedTime(isoString)}`;
+  } catch {
+    return 'an earlier date';
+  }
+}
+
+// A result older than this when it reaches the page came from the server cache
+const SAVED_COPY_THRESHOLD_MS = 60 * 1000;
+
 export function ResultsView({ status, result, error, onRetry }: ResultsViewProps) {
+  const receivedAt = useMemo(() => Date.now(), [result]);
+  const isSavedCopy =
+    result !== null &&
+    receivedAt - new Date(result.retrievedAt).getTime() > SAVED_COPY_THRESHOLD_MS;
+
   return (
     <section id="results-view-section" aria-live="polite" className="w-full">
       {/* 1. Initial State: Clear onboarding prompt */}
@@ -332,7 +350,9 @@ export function ResultsView({ status, result, error, onRetry }: ResultsViewProps
             </span>
             <span className="flex items-center gap-1.5">
               <span>
-                Retrieved at {formatRetrievedTime(result.retrievedAt)} via{' '}
+                {isSavedCopy
+                  ? `Saved copy, retrieved on ${formatRetrievedDateTime(result.retrievedAt)} and reused to load faster, not fetched just now, via`
+                  : `Retrieved at ${formatRetrievedTime(result.retrievedAt)} via`}{' '}
                 <a
                   href={result.sourceUrl}
                   target="_blank"
