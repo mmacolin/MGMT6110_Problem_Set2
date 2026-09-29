@@ -105,7 +105,7 @@ export const OnboardingHero: React.FC<OnboardingHeroProps> = ({
         </h2>
         <p className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
           CountryLens pairs real-time World Bank Development Indicators to compute the historical
-          GDP per capita gap between any two countries from <strong>1950 through 2025</strong> in
+          GDP per capita gap between any two countries from <strong>1960 through 2025</strong> in
           current US Dollars.
         </p>
       </div>
@@ -137,7 +137,7 @@ export const OnboardingHero: React.FC<OnboardingHeroProps> = ({
               <span>Pick Observation Year</span>
             </div>
             <p className="text-xs text-slate-500 mt-0.5 leading-normal">
-              Explore 75 years of historical trajectory from 1950 to 2025.
+              Explore 66 years of historical trajectory from 1960 to 2025.
             </p>
           </div>
         </div>
