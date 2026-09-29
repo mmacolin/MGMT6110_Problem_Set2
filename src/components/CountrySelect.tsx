@@ -3,6 +3,27 @@ import { Country } from '../types';
 import { getCountryFlag } from '../utils/flags';
 import { Search, ChevronDown, Check, X } from 'lucide-react';
 
+// Everyday names people type, keyed by two-letter country code
+const COUNTRY_ALIASES: Record<string, string[]> = {
+  GB: ['uk', 'united kingdom', 'britain', 'great britain', 'england'],
+  US: ['usa', 'us', 'america'],
+  KR: ['south korea'],
+  KP: ['north korea'],
+  CI: ['ivory coast'],
+  RU: ['russia'],
+  VN: ['vietnam'],
+  LA: ['laos'],
+  TR: ['turkey'],
+  CZ: ['czech republic'],
+  SK: ['slovakia'],
+  KG: ['kyrgyzstan'],
+  SY: ['syria'],
+  CV: ['cape verde'],
+  SZ: ['swaziland'],
+  MM: ['burma'],
+  MO: ['macau'],
+};
+
 interface CountrySelectProps {
   id: string;
   label: string;
@@ -49,12 +70,17 @@ export function CountrySelect({
   const filteredCountries = useMemo(() => {
     if (!searchQuery.trim()) return countryList;
     const q = searchQuery.toLowerCase().trim();
-    return countryList.filter(
-      (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.code.toLowerCase().includes(q) ||
-        (c.id && c.id.toLowerCase().includes(q))
+    const aliasMatches = countryList.filter((c) =>
+      (COUNTRY_ALIASES[c.code] || []).some((alias) => alias.startsWith(q))
     );
+    const otherMatches = countryList.filter(
+      (c) =>
+        !aliasMatches.includes(c) &&
+        (c.name.toLowerCase().includes(q) ||
+          c.code.toLowerCase().includes(q) ||
+          (c.id && c.id.toLowerCase().includes(q)))
+    );
+    return [...aliasMatches, ...otherMatches];
   }, [countryList, searchQuery]);
 
   // Close dropdown on outside click
