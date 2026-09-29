@@ -737,3 +737,161 @@ After editing:
 - Provide a short numbered manual retest checklist.
 - Confirm temporary test overrides are not active in production.
 - Explain which changes need pushing to GitHub and redeploying on Vercel.
+
+## Problem Set 4 — Revision
+
+---
+
+### Repair A: Year list starts at 1960 (H5, sev 2, raised by WK, TTS and RK)
+
+**Prompt:**
+```
+ROLE: You are a sceptical senior developer and usability reviewer working in my
+existing project. Before you write any code, your job is to argue against the repair
+I propose.
+
+CONTEXT:
+- Live address: https://problemset2.vercel.app
+- Who the product is for, and what it does for them: CountryLens helps students and
+  other curious readers compare two countries' GDP per capita for a selected year
+  using World Bank data.
+- The finding, in its six lines:
+  Where: https://problemset2.vercel.app, the Observation Year dropdown (1950–2025)
+  and the intro text.
+  What they did, what they saw: The page says it covers "1950 through 2025" and the
+  year list starts at 1950. They chose 1955 and clicked "Compare GDP Per Capita".
+  Both countries showed "Data not reported". Other years in the 1950s gave the same
+  result. The data only starts in 1960, so these years never work for any country,
+  but the app still lets them be picked.
+  Which heuristic: 5, Error Prevention.
+  Screen or system: Screen. The app offers years that can never have data, and the
+  intro promises coverage that doesn't exist.
+  Severity, and why: 2, persistence. The first ten years in the list fail every
+  time, so a new user exploring history keeps hitting empty results and may think
+  the app is broken.
+  The repair: The year list starts at 1960, or years without data are greyed out.
+  The intro says "1960 through 2025", so every year users can pick gives a result.
+- The evidence behind it: 3 of 3 groupmates raised it independently, all at severity 2.
+- The repair I propose: The Observation Year dropdown offers only 1960–2025, and
+  every place on the page that says "1950" now says "1960".
+
+GOAL: Argue against my repair.
+1. Does it solve the problem the finding describes, or a problem I already believed
+   I had? Say which, and why.
+2. Does the problem belong to the screen or to the system, and does my repair sit in
+   the right half?
+3. Name one heuristic this repair could break while it serves the one above, and how.
+4. Propose the smallest alternative that would make the same thing true.
+5. Tell me exactly what to do on the live address to check that the repair worked.
+
+OUTPUT: Your arguments first, as a numbered list. Then stop. Write no code until I
+reply with the repair I have chosen.
+
+GUARDRAILS: Do not tell me the repair is good. If you have no strong reason to doubt
+it, say so plainly instead of inventing one. When I do ask you to build, change only
+what the repair needs. Do not remove Disqus or the privacy notice,
+and do not break /api/health.
+```
+
+---
+
+### Repair B: Search accepts everyday country names (H6, sev 3, raised by WK)
+
+**Prompt:**
+```
+ROLE: You are a sceptical senior developer and usability reviewer working in my
+existing project. Before you write any code, your job is to argue against the repair
+I propose.
+
+CONTEXT:
+- Live address: https://problemset2.vercel.app
+- Who the product is for, and what it does for them: CountryLens helps students and
+  other curious readers compare two countries' GDP per capita for a selected year
+  using World Bank data.
+- The finding, in its six lines:
+  Where: https://problemset2.vercel.app, the Country A picker, the "Search by country
+  or code..." box.
+  What they did, what they saw: They typed "South Korea" and saw "No matching country
+  or economy found". They typed "UK" and the only result was Ukraine. They typed
+  "Ivory Coast" and got no match. The list only answers to the World Bank's official
+  names ("Korea, Rep.", "United Kingdom", "Cote d'Ivoire") or the two-letter code.
+  Which heuristic: 6, Recognition Rather than Recall. The user must recall the
+  database's spelling instead of recognising their country in the list.
+  Screen or system: Screen. The page already holds the full country list from
+  /api/country-list; it only needs a few common alternative names added to the search.
+  Severity, and why: 3, driven by how often it happens. Many well-known countries
+  have an everyday name that differs from the World Bank name, and "UK → Ukraine"
+  could make someone compare the wrong country without noticing.
+  The repair: Searching by everyday names and common short forms (South Korea, UK,
+  USA, Ivory Coast, Russia) finds the right country, and "UK" does not show Ukraine
+  as the only answer.
+- The evidence behind it: 1 of 3 groupmates raised it, at severity 3.
+- The repair I propose: Both country search boxes also match a short list of
+  everyday names and short forms (for example UK, USA, US, South Korea, North Korea,
+  Ivory Coast, Russia, Vietnam, Iran, Egypt, Laos), so typing any of them shows the
+  correct World Bank country first. "UK" shows United Kingdom.
+
+GOAL: Argue against my repair.
+1. Does it solve the problem the finding describes, or a problem I already believed
+   I had? Say which, and why.
+2. Does the problem belong to the screen or to the system, and does my repair sit in
+   the right half?
+3. Name one heuristic this repair could break while it serves the one above, and how.
+4. Propose the smallest alternative that would make the same thing true.
+5. Tell me exactly what to do on the live address to check that the repair worked.
+
+OUTPUT: Your arguments first, as a numbered list. Then stop. Write no code until I
+reply with the repair I have chosen.
+
+GUARDRAILS: Do not tell me the repair is good. If you have no strong reason to doubt
+it, say so plainly instead of inventing one. When I do ask you to build, change only
+what the repair needs. Do not remove Disqus or the privacy notice,
+and do not break /api/health.
+```
+
+### Repair C: Reused results are labelled as a saved copy (H1, sev 2, raised by RK)
+
+**Prompt:**
+```
+ROLE: You are a sceptical senior developer and usability reviewer working in my
+existing project. Before you write any code, your job is to argue against the repair
+I propose.
+
+CONTEXT:
+- Live address: https://problemset2.vercel.app
+- Who the product is for, and what it does for them: CountryLens helps students and
+  other curious readers compare two countries' GDP per capita for a selected year
+  using World Bank data.
+- The finding, in its six lines:
+  Where: CountryLens comparison result screen, the "Retrieved at" line.
+  What they did, what they saw: They compared China and India for 2023 at around
+  6:39 pm. Later, even after refreshing the browser and running the same comparison
+  again, it still showed "Retrieved at 06:39:09 pm". This made them unsure whether
+  the comparison was freshly fetched or reused from an earlier result.
+  Which heuristic: 1, Visibility of System Status.
+  Screen or system: Not stated by the reviewer. I suspect the system: /api/health
+  also returns the same "checkedAt" time on every reload, which suggests Vercel is
+  caching API responses.
+  Severity, and why: 2. The result still appears and can be used, but the old
+  retrieved time can make the user unsure whether the data was freshly fetched.
+  The repair: If the app is showing a cached result, it should clearly say so. The
+  user should be able to understand whether the result was newly fetched or reused
+  from an earlier request.
+- The evidence behind it: 1 of 3 groupmates raised it, at severity 2.
+- The repair I propose: The comparison data route and /api/health send
+  "Cache-Control: no-store", so every comparison is fetched fresh and "Retrieved at"
+  shows the time of that request.
+
+GOAL: Argue against my repair.
+1. Does it solve the problem the finding describes, or a problem I already believed
+   I had? Say which, and why.
+2. Does the problem belong to the screen or to the system, and does my repair sit in
+   the right half?
+3. Name one heuristic this repair could break while it serves the one above, and how.
+4. Propose the smallest alternative that would make the same thing true.
+5. Tell me exactly what to do on the live address to check that the repair worked.
+
+OUTPUT: Your arguments first, as a numbered list. Then stop. Write no code until I
+reply with the repair I have chosen.
+
+GUARDRAILS: Do not tell me the repair is good. If you have no strong
